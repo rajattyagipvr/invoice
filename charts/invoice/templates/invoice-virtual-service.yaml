@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: invoice-virtualservice
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - invoice
+  http:
+    - route:
+        - destination:
+            host: invoice
+          headers:
+            request:
+              add:
+                Knative-Serving-Namespace: jx-staging
+                Knative-Serving-Revision: invoice
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
